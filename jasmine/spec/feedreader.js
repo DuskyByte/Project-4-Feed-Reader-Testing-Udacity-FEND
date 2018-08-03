@@ -26,6 +26,7 @@ $(function() {
             expect(allFeeds.length).not.toBe(0);
         });
 
+        //Tests to ensure url is not empty and resembles a valid URL
         it('URLs are defined and vaild', function() {
             allFeeds.forEach(function(feed) {
             	/*RegEx Explanation: (This should be suffient to ensure a string of greater than 10 characters)
@@ -43,11 +44,7 @@ $(function() {
             });
         });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
+		//Tests to ensure name is not empty and is defined.
         it('names are defined', function() {
             allFeeds.forEach(function(feed) {
                 expect(feed.name).toBeDefined();
@@ -56,20 +53,19 @@ $(function() {
         });
     });
 
-
-    /* TODO: Write a new test suite named "The menu" */
-
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
-         */
+    describe('The menu', function() {
+        //Tests to ensure menu has class, 'menu-hidden' by default.
+        it('is hidden by default', function() {
+        	expect(document.getElementsByTagName('body')[0].classList).toMatch('menu-hidden');
+        });
+        
 
          /* TODO: Write a test that ensures the menu changes
           * visibility when the menu icon is clicked. This test
           * should have two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
+    });
 
     /* TODO: Write a new test suite named "Initial Entries" */
 
