@@ -26,14 +26,20 @@ $(function() {
             expect(allFeeds.length).not.toBe(0);
         });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
-         */
-         it('URLs are defined', function() {
+        it('URLs are defined and vaild', function() {
             allFeeds.forEach(function(feed) {
-                expect(feed.url).toMatch(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
+            	/*RegEx Explanation: (This should be suffient to ensure a string of greater than 10 characters)
+            	 *This should be close enough to approximate a valid URL however
+            	 *Note: Due to the way it checks 'http://a...' would be considered vaild
+            	 * - (http(s)?:\/\/) - Ensures URL starts with 'http://' or 'https://'
+            	 * - [\w.-]+(?:\.[\w\.-]+)+ - Ensures next part of string has three 'words' that are alphanumeric, '_', '.' or '-' of any length greater than 1
+            	 *Additionally checks to ensure each word is sperated by a '.'
+            	 *Note: Other than the first word, any other word can be empty
+            	 * - (?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+ - Ensures next part of string does or doesn't have any other special or alphanumeric characters
+            	 *Special Characters defined as: '-' '.' '_' '~' ':' '/' '?' '#' '[' ']' '@' '!' '$' '&' ''' '(' ')' '*' '+' ',' ';' and '='
+            	 */
+            	//TODO: Enhance RegEx to more closely match a valid URL
+                expect(feed.url).toMatch(/^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
             });
         });
 
@@ -42,6 +48,12 @@ $(function() {
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
+        it('names are defined', function() {
+            allFeeds.forEach(function(feed) {
+                expect(feed.name).toBeDefined();
+            	expect(feed.name.length).not.toBe(0);
+            });
+        });
     });
 
 
