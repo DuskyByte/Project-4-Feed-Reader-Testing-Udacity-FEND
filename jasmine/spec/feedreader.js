@@ -29,14 +29,13 @@ $(function() {
         //Tests to ensure url is not empty and resembles a valid URL
         it('URLs are defined and vaild', function() {
             allFeeds.forEach(function(feed) {
-            	/*RegEx Explanation: (This should be suffient to ensure a string of greater than 10 characters)
-            	 *This should be close enough to approximate a valid URL however
-            	 *Note: Due to the way it checks 'http://a...' would be considered vaild
-            	 * - (http(s)?:\/\/) - Ensures URL starts with 'http://' or 'https://'
-            	 * - [\w.-]+(?:\.[\w\.-]+)+ - Ensures next part of string has three 'words' that are alphanumeric, '_', '.' or '-' of any length greater than 1
+            	/*RegEx Explanation:
+            	 *This should be close enough to approximate a valid URL however due to the way it checks 'http://a...' would be considered vaild
+            	 *<--] ^(http(s)?:\/\/) [--> Ensures URL starts with 'http://' or 'https://'
+            	 *<--] [\w.-]+(?:\.[\w\.-]+)+ [--> Ensures next part of string has three 'words' that are alphanumeric, '_', '.' or '-' of any length
             	 *Additionally checks to ensure each word is sperated by a '.'
             	 *Note: Other than the first word, any other word can be empty
-            	 * - (?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+ - Ensures next part of string does or doesn't have any other special or alphanumeric characters
+            	 *<--] (?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$ [--> Ensures next part of string does or doesn't have any other special or alphanumeric characters
             	 *Special Characters defined as: '-' '.' '_' '~' ':' '/' '?' '#' '[' ']' '@' '!' '$' '&' ''' '(' ')' '*' '+' ',' ';' and '='
             	 */
             	//TODO: Enhance RegEx to more closely match a valid URL
@@ -55,27 +54,41 @@ $(function() {
 
     describe('The menu', function() {
         //Tests to ensure menu has class, 'menu-hidden' by default.
-        it('is hidden by default', function() {
+        it('is initially hidden', function() {
         	expect(document.getElementsByTagName('body')[0].classList).toMatch('menu-hidden');
         });
         
 
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
+        //Tests to ensure menu unhides/hides when clicked. Able to test with a select number of clicks.
+        it('unhides/hides when clicked', function() {
+        	var menuButton = document.getElementsByClassName('menu-icon-link')[0];
+        	var menu = document.getElementsByTagName('body')[0].classList;
+        	var menuShouldBeHidden = (menu === 'menu-hidden');
+        	var timesToClickButton = 4; //Enter amount of clicks to test here.
+        	while (timesToClickButton > 0) {
+				menuButton.click();
+				menuShouldBeHidden = !menuShouldBeHidden;
+				if (menuShouldBeHidden) {
+					expect(menu).not.toMatch('menu-hidden');
+				} else {
+					expect(menu).toMatch('menu-hidden');
+				};
+				timesToClickButton--;
+        	};
+        });
     });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
-
+//    describe('Initial Entries', function() {
         /* TODO: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
-
+//        it('are able to be loaded', function() {
+//        	loadFeed(0);
+//        });
+ //   });
     /* TODO: Write a new test suite named "New Feed Selection" */
 
         /* TODO: Write a test that ensures when a new feed is loaded
