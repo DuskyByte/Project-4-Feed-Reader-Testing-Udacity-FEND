@@ -11,11 +11,11 @@
 $(function() {
     /* This is our first test suite - a test suite just contains
     * a related set of tests. This suite is all about the RSS
-    * feeds definitions, the allFeeds variable in our application.
+    * feeds definitions, the allFeeds letiable in our application.
     */
     describe('RSS Feeds', function() {
         /* This is our first test - it tests to make sure that the
-         * allFeeds variable has been defined and that it is not
+         * allFeeds letiable has been defined and that it is not
          * empty. Experiment with this before you get started on
          * the rest of this project. What happens when you change
          * allFeeds in app.js to be an empty array and refresh the
@@ -38,7 +38,7 @@ $(function() {
             	 *<--] (?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$ [--> Ensures next part of string does or doesn't have any other special or alphanumeric characters
             	 *Special Characters defined as: '-' '.' '_' '~' ':' '/' '?' '#' '[' ']' '@' '!' '$' '&' ''' '(' ')' '*' '+' ',' ';' and '='
             	 */
-            	//TODO: Enhance RegEx to more closely match a valid URL
+            	//TODO: Enhance RegEx to even more closely match a valid URL
                 expect(feed.url).toMatch(/^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/);
             });
         });
@@ -61,10 +61,10 @@ $(function() {
 
         //Tests to ensure menu unhides/hides when clicked. Able to test with a select number of clicks.
         it('unhides/hides when clicked', function() {
-        	var menuButton = document.getElementsByClassName('menu-icon-link')[0];
-        	var menu = document.getElementsByTagName('body')[0].classList;
-        	var menuShouldBeHidden = (menu === 'menu-hidden');
-        	var timesToClickButton = 4; //Enter amount of clicks to test here.
+        	let menuButton = document.getElementsByClassName('menu-icon-link')[0];
+        	let menu = document.getElementsByTagName('body')[0].classList;
+        	let menuShouldBeHidden = (menu === 'menu-hidden');
+        	let timesToClickButton = 4; //Enter amount of clicks to test here.
         	while (timesToClickButton > 0) {
 				menuButton.click();
 				menuShouldBeHidden = !menuShouldBeHidden;
@@ -72,14 +72,14 @@ $(function() {
 					expect(menu).not.toMatch('menu-hidden');
 				} else {
 					expect(menu).toMatch('menu-hidden');
-				};
+				}
 				timesToClickButton--;
-        	};
+        	}
         });
     });
 
     describe('Initial Entries', function() {
-         //Runs loadFeed function and waits for it to complete.
+        //Runs loadFeed function and waits for it to complete.
         beforeEach(function(done) {
         	loadFeed(0, function() {
         		done();
@@ -88,16 +88,34 @@ $(function() {
 
         //Tests if loadFeed loaded the Initial Entries.
         it('are able to be loaded', function() {
-        	var feed = document.getElementsByClassName('feed')[0];
-			var entries = feed.getElementsByClassName('entry');
+			let entries = document.getElementsByClassName('entry');
         	expect(entries.length).not.toBe(0);
         });
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
+    describe('New Feed Selection', function() {
+    	let id = 0;
+    	let allLoadedEntries = [];
+		//Runs loadFeed function multiple times, giving it some time to load.
+        beforeEach(function(done) {
+        	while (id < allFeeds.length) {
+        		loadFeed(id, function() {
+        			//Pushes all entries from the feed as an array into an array to be tested.
+        			allLoadedEntries.push([...new Array(document.getElementsByClassName('entry'))]);
+        		});
+        		id++;
+        	}
+        	setTimeout(function() {
+        		loadFeed(0);
+				done();
+			}, 1500);
+        });
 
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
+        //Ensures all feeds loaded are unique.
+        it('only loads unique content', function() {
+        	expect(allLoadedEntries.length).not.toBe(0);
+        	let duplicatesRemoved = [...new Set(allLoadedEntries)];
+        	expect(allLoadedEntries).toEqual(duplicatesRemoved);
+        });
+    });
 }());
