@@ -29,6 +29,7 @@ $(function() {
         //Tests to ensure url is not empty and resembles a valid URL
         it('URLs are defined and vaild', function() {
             allFeeds.forEach(function(feed) {
+            	expect(feed.url).toBeDefined();
             	/*RegEx Explanation:
             	 *This should be close enough to approximate a valid URL however due to the way it checks 'http://a...' would be considered vaild
             	 *<--] ^(http(s)?:\/\/) [--> Ensures URL starts with 'http://' or 'https://'
@@ -63,18 +64,10 @@ $(function() {
         it('unhides/hides when clicked', function() {
         	let menuButton = document.getElementsByClassName('menu-icon-link')[0];
         	let menu = document.getElementsByTagName('body')[0].classList;
-        	let menuShouldBeHidden = (menu === 'menu-hidden');
-        	let timesToClickButton = 4; //Enter amount of clicks to test here.
-        	while (timesToClickButton > 0) {
-				menuButton.click();
-				menuShouldBeHidden = !menuShouldBeHidden;
-				if (menuShouldBeHidden) {
-					expect(menu).not.toMatch('menu-hidden');
-				} else {
-					expect(menu).toMatch('menu-hidden');
-				}
-				timesToClickButton--;
-        	}
+			menuButton.click();
+			expect(menu).not.toMatch('menu-hidden');
+			menuButton.click();
+			expect(menu).toMatch('menu-hidden');
         });
     });
 
@@ -88,34 +81,29 @@ $(function() {
 
         //Tests if loadFeed loaded the Initial Entries.
         it('are able to be loaded', function() {
-			let entries = document.getElementsByClassName('entry');
+			let entries = document.querySelectorAll('.feed .entry');
         	expect(entries.length).not.toBe(0);
         });
     });
 
     describe('New Feed Selection', function() {
-    	let id = 0;
-    	let allLoadedEntries = [];
-		//Runs loadFeed function multiple times, giving it some time to load.
-        beforeEach(function(done) {
-        	while (id < allFeeds.length) {
-        		loadFeed(id, function() {
-        			//Pushes all entries from the feed as an array into an array to be tested.
-        			allLoadedEntries.push([...new Array(document.getElementsByClassName('entry'))]);
-        		});
-        		id++;
-        	}
-        	setTimeout(function() {
-        		loadFeed(0);
-				done();
-			}, 1500);
+    	let firstFeedHTML;
+    	let secondFeedHTML;
+
+		//Runs loadFeed function 2 times and collects the current feed's content.
+        beforeAll(function(done) {
+		    loadFeed(0, function() {
+		    	firstFeedHTML = document.querySelector('.feed').innerHTML;
+		        loadFeed(1, function() {
+		        	secondFeedHTML = document.querySelector('.feed').innerHTML;
+		        	done();
+		    	});
+			});
         });
 
-        //Ensures all feeds loaded are unique.
-        it('only loads unique content', function() {
-        	expect(allLoadedEntries.length).not.toBe(0);
-        	let duplicatesRemoved = [...new Set(allLoadedEntries)];
-        	expect(allLoadedEntries).toEqual(duplicatesRemoved);
+        //Ensures feeds loaded are different.
+        it('changes content when new feeds are selected', function() {
+        	expect(firstFeedHTML).not.toEqual(secondFeedHTML);
         });
     });
 }());
