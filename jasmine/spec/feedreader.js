@@ -26,10 +26,11 @@ $(function() {
             expect(allFeeds.length).not.toBe(0);
         });
 
-        //Tests to ensure url is not empty and resembles a valid URL
+        //Tests to ensure url is defined, not empty and resembles a valid URL
         it('URLs are defined and vaild', function() {
             allFeeds.forEach(function(feed) {
             	expect(feed.url).toBeDefined();
+            	expect(feed.url.length).not.toBe(0);
             	/*RegEx Explanation:
             	 *This should be close enough to approximate a valid URL however due to the way it checks 'http://a...' would be considered vaild
             	 *<--] ^(http(s)?:\/\/) [--> Ensures URL starts with 'http://' or 'https://'
@@ -65,9 +66,9 @@ $(function() {
         	let menuButton = document.getElementsByClassName('menu-icon-link')[0];
         	let menu = document.getElementsByTagName('body')[0].classList;
 			menuButton.click();
-			expect(menu).not.toMatch('menu-hidden');
+			expect(menu).hasClass('menu-hidden').toBe(false);
 			menuButton.click();
-			expect(menu).toMatch('menu-hidden');
+			expect(menu).hasClass('menu-hidden').toBe(true);
         });
     });
 
